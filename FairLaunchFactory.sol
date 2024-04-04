@@ -109,15 +109,15 @@ contract FairLaunchFactoryV1 is Ownable, ReentrancyGuard {
         return addressIsLaunchpad[_address];
     }
 
-    function setFactoryFee(uint256 _newFee) public multiSigOnly {
+    function setFactoryFee(uint256 _newFee) public onlyOwner {
         factoryFee = _newFee;
     }
 
-    function setStakingContract(uint256 _newStakingContract) public multiSigOnly {
+    function setStakingContract(uint256 _newStakingContract) public onlyOwner {
         stakingContract = _newStakingContract;
     }
 
-    function openFactory() public multiSigOnly {
+    function openFactory() public onlyOwner {
         factoryOpen = true;
     }
 }

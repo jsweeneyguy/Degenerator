@@ -83,4 +83,3 @@ contract DegeneratorStaking is Context, ReentrancyGuard {
 
 
 }
-
