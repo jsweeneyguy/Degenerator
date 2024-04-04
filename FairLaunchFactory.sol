@@ -13,7 +13,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 //FairLaunchpad Contract 
 import "./FairTokenLaunchpad.sol";
 
-contract FairLaunchFactory is Ownable, ReentrancyGuard {
+contract FairLaunchFactoryV1 is Ownable, ReentrancyGuard {
     uint256 public factoryFee;
     address public stakingContract;
     address public multiSigAddress;
