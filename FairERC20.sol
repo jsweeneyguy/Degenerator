@@ -9,4 +9,3 @@ contract FairERC20 is ERC20 {
         _mint(msg.sender, _totalSupply * 10**decimals());
     }
 }
-
