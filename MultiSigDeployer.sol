@@ -16,16 +16,8 @@ import "./FairERC20.sol";
 contract MultisigWallet is Ownable {
 
     address[] private execAddresses;
-    mapping(address => uint256) private revenueShares;
-
-    uint256 private totalRevenueShares;
-    uint256 private numConfirmationsRequired;
-    uint256 private currentNumConfirmations; 
-    uint256 public currentVoteStartBlock;
-
-    uint256 public votedFactoryFee;
-    address public stakingContractAddress;
-    address public tokenContract; 
+    uint256[] private revenueShares;
+    mapping(address => bool) private isExec;
 
     FairLaunchFactoryV1 public fairLaunchFactory;
     DegeneratorStaking public stakingContract;
@@ -33,8 +25,20 @@ contract MultisigWallet is Ownable {
 
     uint256 public launchTime; 
 
-    FairERC20 public degenerator;
-    address public degeneratorAddress;
+    IERC20 public degenerator;
+
+    mapping(bytes4 => VoteData) private factoryConfigurationVotes;
+
+    modifier onlyExec() {
+        require(isExec[msg.sender]);
+        _;
+    }
+
+
+    struct VoteData {
+        mapping(address => bool) hasVoted;
+        mapping(uint256 => uint256) votes;
+    }
 
 
     struct Transaction {
@@ -44,16 +48,11 @@ contract MultisigWallet is Ownable {
     }
 
     event Deposit(address indexed depositor, uint256 amount, uint256 timeStaked);
-    event Withdrawal(address indexed staker, uint256 amount);
 
-    constructor(address[] memory _owners, uint256[] memory _startingSplits , uint256 _numConfirmationsRequired, uint256 _launchTime) Ownable(msg.sender) {
+    constructor(address[] memory _owners, uint256[] memory _startingSplits , uint256 _launchTime) Ownable(msg.sender) {
         require(_owners.length > 0, "Owners required");
-        require(_numConfirmationsRequired > 0 && _numConfirmationsRequired <= _owners.length, "Invalid number of confirmations");
         execAddresses = _owners;
-        for (uint256 i = 0; i < _owners.length; i++) {
-            revenueShares[_owners[i]] = _startingSplits[i];
-        }
-        numConfirmationsRequired = _numConfirmationsRequired;
+        revenueShares = _startingSplits;
         launchTime = _launchTime;
     }
     
@@ -62,34 +61,87 @@ contract MultisigWallet is Ownable {
         //Shares will be represented as a number such that N / 1000 = Rev Split % 
         for (uint256 i = 0; i < execAddresses.length; i++) {
             address currentAddress = execAddresses[i];
-            uint256 withdrawShare = (_amount * revenueShares[currentAddress]) / 1000;
+            uint256 withdrawShare = (_amount * revenueShares[i]) / 1000;
             payable(currentAddress).transfer(withdrawShare);
-            emit Withdrawal(_msgSender(), _amount);
         }
     }
 
     function launchDegeneratorFactory(uint256 _factoryFee ,uint256 _factoryBaseFee, address _stakingContract, address _degeneratorToken) public onlyOwner {
-        require(stakingContractAddress != address(0) && tokenContract != address(0) && block.timestamp > launchTime );
+        require(address(stakingContract) != address(0) && address(degenerator) != address(0) && block.timestamp > launchTime );
         fairLaunchFactory = new FairLaunchFactoryV1(_factoryFee, _factoryBaseFee, _stakingContract, _degeneratorToken, address(this));
         fairLaunchFactoryAddress = address(fairLaunchFactory);
     }
 
     function launchStakingContract(uint256 _minimumStakeAmount, uint256 _rewardBlackoutPeriod) public onlyOwner {
-        require(degeneratorAddress != address(0) && block.timestamp > launchTime);
-        stakingContract = new DegeneratorStaking(msg.sender , tokenContract,_minimumStakeAmount,_rewardBlackoutPeriod);
+        require(address(degenerator) != address(0) && block.number > launchTime);
+        stakingContract = new DegeneratorStaking(msg.sender , address(degenerator),_minimumStakeAmount,_rewardBlackoutPeriod);
     }
 
     function setDegeneratorAddress( address _address ) public onlyOwner {
-        tokenContract = _address;
+        degenerator = IERC20(_address);
     }
 
-    //Proposed voting mechanisms: factory Fee change, factory staking contract change, staking contract pausing, staking contract factory change 
-    //For a proposed vote:
-    //reset current confirmations 
-    //hold value 
-    //function to close vote 
-    //function to execute after successful vote 
-    //Owner of multisig wallet has veto power, if they have not confirmed then vote fails 
+    function setMinimumStakeAmount(uint256 _amount) public onlyOwner {
+        require(isApproved(getMinStakeSignature(), _amount));
+        stakingContract.setMinimumStakeAmount(_amount);
+    }
+
+    function setRewardBlackoutPeriod(uint256 _length) public onlyOwner {
+        require(isApproved(getBlackoutSignature(), _length));
+        stakingContract.setRewardBlackoutPeriod(_length);
+    }
+
+    function setFactoryBaseFee(uint256 _amount) public onlyOwner {
+        fairLaunchFactory.setFactoryBaseFee(_amount);
+    }
+
+    function setFactoryFee(uint256 _amount) public onlyOwner {
+        fairLaunchFactory.setFactoryFee(_amount);
+    }    
+
+    function closeFactory(bool _closed) public onlyOwner {
+        fairLaunchFactory.closeFactory(_closed);
+    }
+
+    function withdrawETHfromFactory() public onlyOwner {
+        require(address(fairLaunchFactory).balance > 0);
+        fairLaunchFactory.withdrawETHToMultiSig();
+    }
+
+    function withdrawTokensFromFactory(address[] calldata _tokenAddresses) public onlyOwner {
+        fairLaunchFactory.withdrawTokensToMultiSig(_tokenAddresses);
+    }
+
+    function isApproved(bytes4 _function, uint256 _value) public view returns (bool) {
+        VoteData storage voteData = factoryConfigurationVotes[_function];
+        return (voteData.votes[_value] * 3 > execAddresses.length * 2);
+    }
+
+    function vote(bytes4 _function, uint256 _value) public onlyExec {
+        VoteData storage voteData = factoryConfigurationVotes[_function];
+        require(!voteData.hasVoted[msg.sender], "Already voted");
+        voteData.votes[_value]++;
+        voteData.hasVoted[msg.sender] = true;
+    }
+
+    function getMinStakeSignature() public pure returns (bytes4) {
+        // Example function signature: setMinimumStakeAmount(uint256)
+        return this.setMinimumStakeAmount.selector;
+    }
+
+    function getBlackoutSignature() public pure returns (bytes4) {
+        // Example function signature: setMinimumStakeAmount(uint256)
+        return this.setRewardBlackoutPeriod.selector;
+    }
+
+    function getBaseFeeSignature() public pure returns (bytes4) {
+        // Example function signature: setMinimumStakeAmount(uint256)
+        return this.setFactoryBaseFee.selector;
+    }
+
+    function getFeeSignature() public pure returns (bytes4) {
+        return this.setFactoryFee.selector;
+    }
 
     receive() external payable { 
         emit Deposit(msg.sender, msg.value, block.number);

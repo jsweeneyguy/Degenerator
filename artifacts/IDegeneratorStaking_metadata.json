@@ -214,6 +214,32 @@
 						"type": "uint256"
 					}
 				],
+				"name": "setMinimumStakeAmount",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_length",
+						"type": "uint256"
+					}
+				],
+				"name": "setRewardBlackoutPeriod",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
 				"name": "stakeDegnerator",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -281,11 +307,11 @@
 	},
 	"sources": {
 		"IDegeneratorStaking.sol": {
-			"keccak256": "0x75fe7aeb857cddc38b599adfdb4d996d66101752668e6aebd6bbc06b8850cb84",
+			"keccak256": "0x10ef61b457f21d8f6ee80014427b16f56a2ad7dfb5f6fb6ad577643947edee01",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ff86b9d732c3d8ef6fe1a74b48cd8afd7051076c15a45b8eb619f3800b635159",
-				"dweb:/ipfs/Qmc7JHd9wMKNbSwspVxPewNLsUwrDVF8epuZ1VMWtid7MP"
+				"bzz-raw://43d00a8d78a8fd634eedc73d88a9e09d7824774fc455222fdbc8031ad9e7c9a9",
+				"dweb:/ipfs/QmP5wUXdoJMN9rPawrg8s24CBkQc2chBNVFPBBttoEgHv5"
 			]
 		},
 		"IFairLaunchFactory.sol": {

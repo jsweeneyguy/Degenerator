@@ -59,6 +59,8 @@
 			"multiSigAddress()": "1516def7",
 			"registerERC20Supply(address,uint256)": "8167ee72",
 			"rewardBlackoutPeriod()": "9f8932f4",
+			"setMinimumStakeAmount(uint256)": "0d29fcd4",
+			"setRewardBlackoutPeriod(uint256)": "9b29d215",
 			"stakeDegnerator(uint256)": "41fee557",
 			"tokenAddress()": "9d76ea58",
 			"withdrawDegenerator()": "95adb5ad",
@@ -265,6 +267,32 @@
 				}
 			],
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "setMinimumStakeAmount",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_length",
+					"type": "uint256"
+				}
+			],
+			"name": "setRewardBlackoutPeriod",
+			"outputs": [],
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{

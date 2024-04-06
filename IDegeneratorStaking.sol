@@ -20,6 +20,8 @@ interface IDegeneratorStaking {
     function withdrawRewards(address[] calldata _tokenAddresses) external;
     function getTokenEligibility(address _tokenAddress, address _account) external view returns(bool);
     function getTokenReward(address _tokenAddress, address _account) external view returns(uint256);
+    function setMinimumStakeAmount(uint256 _amount) external;
+    function setRewardBlackoutPeriod(uint256 _length) external;
 
     event degeneratorStaked(address indexed staker, uint256 amount, uint256 blockStaked);
     event degeneratorWithdrawn(address indexed staker, uint256 amount);
