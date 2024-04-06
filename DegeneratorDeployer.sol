@@ -13,7 +13,7 @@ import "./FairERC20.sol";
 //This is only multisig for changes made to the factory 
 //Disbursals handled by owner 
 
-contract MultisigWallet is Ownable {
+contract DegneratorDeployer is Ownable {
 
     address[] private execAddresses;
     uint256[] private revenueShares;
