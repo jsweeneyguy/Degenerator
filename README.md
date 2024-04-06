@@ -2,7 +2,11 @@
 
 ### Degenerator Overview
 
-`Degenerator` is an smart contract architecture designed to deploy: 1. Degenerator Token, 2. Degenerator Staking, 3. Degenerator Launch Factory, 4.  Multisignature Management/Deployer Wallet 
+`Degenerator` is an smart contract architecture designed to deploy: 
+1. **Degenerator Token**
+2. **Degenerator Staking**
+3. **Degenerator Launch Factory** 
+4.  **Multisignature Management/Deployer Wallet** 
 
 The Degenerator Launch Factory (termed `FairLaunchFactoryV1`) is an Automated Token Launchpad / Market Maker rolled into one. Users can pay the specified fee to purchase Token Launchpads from the Launch Factory. All Token Launchpads are themselves a smart contract that facilitate: 1. Autonomosly generating a non-mintable, SafeERC20 standard token and allocating said token to users; 2. Creating a Uniswap ETH/Token pair, generating a market for the pair by adding liquidity and tokens to the Liquidity Pair, 3. Burning ownership of the market pair and Liquidity Pool upon creation to ensure token holder safety. 
 
