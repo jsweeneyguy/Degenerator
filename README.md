@@ -34,12 +34,6 @@ The contract is structured as follows:
 
 5. **Voting on Configuration Changes**: Use the `vote` function to approve configuration changes for the factory and staking contract.
 
-## Security Considerations
-
-- Ensure that the list of signatories and revenue splits are carefully chosen to prevent unauthorized transactions.
-- Verify configuration changes thoroughly before voting to avoid unintended consequences.
-- Implement proper access controls to restrict sensitive functions to authorized users only.
-
 
 ### FairLaunchFactoryV1 Overview
 
@@ -67,13 +61,6 @@ The contract is structured as follows:
 2. **Creating Fair Launchpads**: Use the `createFairLaunchpad` function to generate fair launchpads for new tokens with customizable parameters.
 3. **Configuring Factory**: Adjust the factory fee, base fee, staking contract address, and other parameters using the respective functions.
 4. **Managing Launchpads**: Monitor and manage created launchpads using the provided getter functions.
-
-## Security Considerations
-
-- Ensure that only authorized addresses have access to critical functions such as setting factory configurations and closing the factory.
-- Regularly review and audit the contract code to identify and mitigate potential security vulnerabilities.
-- Use a secure multisig address for executing sensitive operations to prevent unauthorized actions.
-
 
 ### FairTokenLaunchpad Overview 
 
@@ -104,12 +91,6 @@ The contract includes the following components:
 4. **Managing Allocations**: Adjust founder allocations as needed using the provided functions.
 5. **Withdrawal**: Users can withdraw tokens or ETH from the presale if conditions are met.
 
-## Security Considerations
-
-- Ensure that only authorized addresses have access to critical functions such as setting presale live and managing allocations.
-- Implement proper checks and validations to prevent unauthorized access and ensure fair token launches.
-- Regularly review and audit the contract code to identify and mitigate potential security vulnerabilities.
-
 
 ## DegeneratorStaking Overview
 
@@ -139,11 +120,3 @@ The contract includes the following components:
 2. **Withdrawing Staked Tokens**: Stakers can withdraw their staked tokens using the `withdrawDegenerator` function.
 3. **Withdrawing Rewards**: Stakers can withdraw rewards earned by calling the `withdrawRewards` function.
 4. **Configuring Parameters**: The contract owner can adjust parameters such as the minimum stake amount and reward blackout period.
-
-## Security Considerations
-
-- Ensure that only authorized addresses have access to critical functions such as adjusting parameters and withdrawing rewards.
-- Implement proper checks and validations to prevent unauthorized access and ensure fair reward distribution.
-- Regularly review and audit the contract code to identify and mitigate potential security vulnerabilities.
-
-
