@@ -2,7 +2,7 @@
 
 ### DegeneratorDeployer Overview
 
-The DegeneratorDeployer contract is a multisignature wallet with additional functionalities for managing a fair launch factory and a staking contract. This contract allows for executing transactions only when approved by a specified number of signatories.
+The `DegeneratorDeployer` contract is a multisignature wallet with additional functionalities for managing a fair launch factory and a staking contract. This contract allows for executing transactions only when approved by a specified number of signatories.
 
 ## Contract Structure
 
